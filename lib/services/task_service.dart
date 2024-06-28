@@ -20,4 +20,15 @@ class TaskService {
     final tasksJson = jsonEncode(tasks.map((task) => task.toJson()).toList());
     await prefs.setString(_tasksKey, tasksJson);
   }
+
+  static Future<void> deleteTask(String taskId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final tasksData = prefs.getString(_tasksKey);
+    if (tasksData == null) return;
+    final List<dynamic> tasksJson = jsonDecode(tasksData);
+    final tasks = tasksJson.map((json) => Task.fromJson(json)).toList();
+    tasks.removeWhere((task) => task.id == taskId);
+    final updatedTasksJson = jsonEncode(tasks.map((task) => task.toJson()).toList());
+    await prefs.setString(_tasksKey, updatedTasksJson);
+  }
 }

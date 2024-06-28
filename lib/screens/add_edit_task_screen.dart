@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter_ddm/models/task.dart';
 import 'package:flutter_ddm/services/task_service.dart';
@@ -6,7 +8,7 @@ import 'package:uuid/uuid.dart';
 class AddEditTaskScreen extends StatefulWidget {
   final Task? task;
 
-  AddEditTaskScreen({this.task});
+  const AddEditTaskScreen({super.key, this.task});
 
   @override
   _AddEditTaskScreenState createState() => _AddEditTaskScreenState();

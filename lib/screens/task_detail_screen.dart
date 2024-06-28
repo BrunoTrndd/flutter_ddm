@@ -6,16 +6,16 @@ import 'package:flutter_ddm/screens/add_edit_task_screen.dart';
 class TaskDetailScreen extends StatelessWidget {
   final Task task;
 
-  TaskDetailScreen({required this.task});
+  const TaskDetailScreen({super.key, required this.task});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Task Details'),
+        title: const Text('Task Details'),
         actions: [
           IconButton(
-            icon: Icon(Icons.edit),
+            icon: const Icon(Icons.edit),
             onPressed: () async {
               final updatedTask = await Navigator.push(
                 context,
@@ -27,7 +27,7 @@ class TaskDetailScreen extends StatelessWidget {
             },
           ),
           IconButton(
-            icon: Icon(Icons.delete),
+            icon: const Icon(Icons.delete),
             onPressed: () async {
               await _deleteTask(context);
             },
@@ -41,14 +41,12 @@ class TaskDetailScreen extends StatelessWidget {
           children: [
             Text(
               task.title,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
-            Text(task.description),
-            SizedBox(height: 20),
+            const SizedBox(height: 8),
             Text('Due Date: ${task.dueDate.toLocal()}'.split(' ')[0]),
-            SizedBox(height: 20),
-            Text('Completed: ${task.isCompleted ? 'Yes' : 'No'}'),
+            const SizedBox(height: 16),
+            Text(task.description),
           ],
         ),
       ),
@@ -56,9 +54,7 @@ class TaskDetailScreen extends StatelessWidget {
   }
 
   Future<void> _deleteTask(BuildContext context) async {
-    final tasks = await TaskService.getTasks();
-    tasks.removeWhere((t) => t.id == task.id);
-    await TaskService.saveTasks(tasks);
-    Navigator.pop(context);
+    await TaskService.deleteTask(task.id);
+    Navigator.pop(context, task.id);
   }
 }

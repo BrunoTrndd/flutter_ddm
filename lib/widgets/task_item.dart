@@ -5,7 +5,7 @@ class TaskItem extends StatelessWidget {
   final Task task;
   final VoidCallback onTap;
 
-  TaskItem({required this.task, required this.onTap});
+  const TaskItem({super.key, required this.task, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

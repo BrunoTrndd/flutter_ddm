@@ -6,7 +6,10 @@ import 'package:flutter_ddm/screens/task_detail_screen.dart';
 import 'package:flutter_ddm/widgets/task_item.dart';
 
 class TaskListScreen extends StatefulWidget {
+  const TaskListScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _TaskListScreenState createState() => _TaskListScreenState();
 }
 

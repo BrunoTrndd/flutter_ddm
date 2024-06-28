@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ddm/models/task.dart';
 import 'package:flutter_ddm/services/task_service.dart';
 import 'package:flutter_ddm/screens/add_edit_task_screen.dart';
+import 'package:intl/intl.dart';
 
 class TaskDetailScreen extends StatelessWidget {
   final Task task;
@@ -44,9 +45,16 @@ class TaskDetailScreen extends StatelessWidget {
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            Text('Due Date: ${task.dueDate.toLocal()}'.split(' ')[0]),
+            Text('Due Date: ${DateFormat('yyyy-MM-dd').format(task.dueDate)}'),
             const SizedBox(height: 16),
             Text(task.description),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () async {
+                await _markTaskAsCompleted(context);
+              },
+              child: const Text('Mark as Completed'),
+            ),
           ],
         ),
       ),
@@ -56,5 +64,17 @@ class TaskDetailScreen extends StatelessWidget {
   Future<void> _deleteTask(BuildContext context) async {
     await TaskService.deleteTask(task.id);
     Navigator.pop(context, task.id);
+  }
+
+  Future<void> _markTaskAsCompleted(BuildContext context) async {
+    final updatedTask = Task(
+      id: task.id,
+      title: task.title,
+      description: task.description,
+      dueDate: task.dueDate,
+      isCompleted: true,
+    );
+    await TaskService.updateTask(updatedTask);
+    Navigator.pop(context, updatedTask);
   }
 }

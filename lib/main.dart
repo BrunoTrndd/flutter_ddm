@@ -13,7 +13,7 @@ class TaskManagerApp extends StatelessWidget {
     return MaterialApp(
       title: 'Task Manager App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.deepPurple,
       ),
       home: LoginScreen(),
     );

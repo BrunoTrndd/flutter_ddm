@@ -31,4 +31,18 @@ class TaskService {
     final updatedTasksJson = jsonEncode(tasks.map((task) => task.toJson()).toList());
     await prefs.setString(_tasksKey, updatedTasksJson);
   }
+
+  static Future<void> updateTask(Task updatedTask) async {
+    final prefs = await SharedPreferences.getInstance();
+    final tasksData = prefs.getString(_tasksKey);
+    if (tasksData == null) return;
+    final List<dynamic> tasksJson = jsonDecode(tasksData);
+    final tasks = tasksJson.map((json) => Task.fromJson(json)).toList();
+    final index = tasks.indexWhere((task) => task.id == updatedTask.id);
+    if (index != -1) {
+      tasks[index] = updatedTask;
+    }
+    final updatedTasksJson = jsonEncode(tasks.map((task) => task.toJson()).toList());
+    await prefs.setString(_tasksKey, updatedTasksJson);
+  }
 }

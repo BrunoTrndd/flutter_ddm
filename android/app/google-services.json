@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "990507715229",
+    "project_id": "notes-ddm",
+    "storage_bucket": "notes-ddm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:990507715229:android:9d913e77bfae6f4e77a274",
+        "android_client_info": {
+          "package_name": "com.example.flutter_ddm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCh5Q8ZQIUciXXmLrYovTVb3oOzOfOwVx0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

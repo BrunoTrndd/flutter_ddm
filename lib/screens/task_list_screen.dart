@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ddm/models/task.dart';
+import 'package:flutter_ddm/screens/profile_screen.dart';
 import 'package:flutter_ddm/services/task_service.dart';
 import 'package:flutter_ddm/screens/add_edit_task_screen.dart';
 import 'package:flutter_ddm/screens/task_detail_screen.dart';
 import 'package:flutter_ddm/widgets/task_item.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TaskListScreen extends StatefulWidget {
   const TaskListScreen({super.key});
@@ -15,11 +18,28 @@ class TaskListScreen extends StatefulWidget {
 
 class _TaskListScreenState extends State<TaskListScreen> {
   List<Task> _tasks = [];
+  late String _userId;
 
   @override
   void initState() {
     super.initState();
+    _initUser();
+  }
+
+  Future<void> _initUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    _userId = prefs.getString('token')!;
+    _checkConnectivity();
     _loadTasks();
+  }
+
+  void _checkConnectivity() {
+    final Connectivity connectivity = Connectivity();
+    connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+      if (result != ConnectivityResult.none) {
+        TaskService.syncWithRemote(_userId);
+      }
+    });
   }
 
   Future<void> _loadTasks() async {
@@ -29,7 +49,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
     });
   }
 
-  void _removeTask(String taskId) {
+  void _removeTask(String taskId) async {
+    await TaskService.deleteTask(taskId);
     setState(() {
       _tasks.removeWhere((task) => task.id == taskId);
     });
@@ -42,16 +63,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
         title: const Text('Tasks'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () async {
-              final newTask = await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AddEditTaskScreen()),
-              );
-              if (newTask != null) {
-                _loadTasks();
-              }
-            },
+            icon: const Icon(Icons.person_rounded),
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileScreen())),
           ),
         ],
       ),
@@ -68,6 +81,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
               );
               if (result != null) {
                 if (result is Task) {
+                  await TaskService.updateTask(result);  // Atualiza a tarefa no armazenamento local
                   _loadTasks();
                 } else if (result is String) {
                   _removeTask(result);
@@ -75,6 +89,19 @@ class _TaskListScreenState extends State<TaskListScreen> {
               }
             },
           );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () async {
+          final newTask = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddEditTaskScreen()),
+          );
+          if (newTask != null) {
+            await TaskService.updateTask(newTask);
+            _loadTasks();
+          }
         },
       ),
     );
